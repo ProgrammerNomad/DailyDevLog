@@ -4,6 +4,7 @@ import os
 import logging
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+import argparse
 
 # Load environment variables
 load_dotenv()
@@ -18,12 +19,25 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 def fetch_commits(repo, author, since, until, token):
     """Fetch commits from GitHub API."""
     url = f"https://api.github.com/repos/{repo}/commits"
-    params = {"since": since, "until": until, "author": author}
-    headers = {"Authorization": f"token {token}"}
+    # Remove author from params to get all commits
+    params = {"since": since, "until": until}
+    headers = {"Authorization": f"Bearer {token}"}
     try:
         resp = requests.get(url, headers=headers, params=params)
         resp.raise_for_status()
-        return resp.json()
+        commits = resp.json()
+        
+        # Log detailed commit information
+        logging.info(f"Found {len(commits)} commits")
+        for commit in commits:
+            author_name = commit['commit']['author']['name']
+            logging.info(
+                f"Commit: {commit['sha'][:8]} | "
+                f"Date: {commit['commit']['author']['date']} | "
+                f"Author: {author_name} | "
+                f"Message: {commit['commit']['message'].strip()}"
+            )
+        return commits
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching commits: {e}")
         return []
@@ -59,26 +73,58 @@ def save_report(summary, date):
         file.write(summary)
     logging.info(f"Report saved to {report_filename}")
 
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description='Generate summary of GitHub commits')
+    parser.add_argument(
+        '--date', 
+        choices=['today', 'yesterday'],
+        default='today',
+        help='Choose date range for commits (today/yesterday)'
+    )
+    return parser.parse_args()
+
+def get_time_range(date_choice):
+    """Get the time range based on user choice."""
+    now = datetime.now(timezone.utc)
+    
+    if date_choice == 'yesterday':
+        start_date = (now - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    else:  # today
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+    
+    return start_date.isoformat(), end_date.isoformat()
+
 def main():
     """Main function to fetch commits and generate the report."""
-    now = datetime.now(timezone.utc)  # Use timezone-aware datetime
-    since = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
-    until = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    args = parse_args()
+    since, until = get_time_range(args.date)
 
-    logging.info("Fetching commits...")
+    logging.info(f"Fetching commits for {REPO}")
+    logging.info(f"Time range: {since} to {until}")
+    
     commits = fetch_commits(REPO, AUTHOR, since, until, GITHUB_TOKEN)
     if not commits:
-        print("No commits found today.")
+        print(f"No commits found for {args.date}.")
         return
 
-    commit_messages = "\n".join(f"- {c['commit']['message'].strip()}" for c in commits)
+    # Format commit messages with SHA and author
+    commit_messages = "\n".join(
+        f"- [{c['sha'][:8]}] ({c['commit']['author']['name']}) {c['commit']['message'].strip()}" 
+        for c in commits
+    )
+    
     logging.info("Generating summary...")
     summary = generate_summary(commit_messages, OPENAI_API_KEY)
 
-    print(f"🧠 DailyDevLog Summary for {now.date()}:\n")
-    print(summary)
+    date_str = datetime.fromisoformat(since.replace('Z', '+00:00')).date()
+    print(f"\n🧠 DailyDevLog Summary for {date_str}:\n")
+    print(f"{summary}\n")
 
-    save_report(summary, now.date())
+    # Save report with commit IDs and authors
+    save_report(f"{summary}\n\n## Commit Details\n\n{commit_messages}", date_str)
 
 if __name__ == "__main__":
     main()

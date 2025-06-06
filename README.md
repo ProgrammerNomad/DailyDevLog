@@ -74,7 +74,11 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
 1. Run the script to generate the daily summary:
 
    ```bash
+   # For today's commits (default)
    python devlog.py
+
+   # For yesterday's commits
+   python devlog.py --date yesterday
    ```
 
 2. The summary will be saved in the `reports` directory as a Markdown file named `DailyDevLog_<date>.md`.
