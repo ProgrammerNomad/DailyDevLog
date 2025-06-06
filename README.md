@@ -53,7 +53,7 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
 #### GitHub Personal Access Token (`GITHUB_TOKEN`)
 
 1. Log in to your GitHub account.
-2. Navigate to **Settings** > **Developer settings** > **Personal access tokens** > **Tokens (classic)**.
+2. Navigate to [Settings](https://github.com/settings) > [Developer settings](https://github.com/settings/apps) > [Personal access tokens](https://github.com/settings/tokens) > [Tokens (classic)](https://github.com/settings/tokens/new).
 3. Click **Generate new token**.
 4. Select the required scopes:
    - For this project, select `repo` to access repository commits.
