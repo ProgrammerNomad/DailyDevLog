@@ -1,5 +1,8 @@
-import requests, openai, os, logging
-from datetime import datetime, timedelta
+import requests
+from openai import OpenAI
+import os
+import logging
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -27,14 +30,14 @@ def fetch_commits(repo, author, since, until, token):
 
 def generate_summary(commit_messages, openai_api_key):
     """Generate summary using OpenAI GPT-4."""
-    openai.api_key = openai_api_key
+    client = OpenAI(api_key=openai_api_key)
     prompt = (
         "You are a project manager summarizing developer work.\n"
         "Summarize the following commit messages in a clear, concise, human-readable format:\n"
         f"{commit_messages}"
     )
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You summarize developer commits clearly."},
@@ -58,9 +61,9 @@ def save_report(summary, date):
 
 def main():
     """Main function to fetch commits and generate the report."""
-    now = datetime.utcnow()
-    since = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat() + "Z"
-    until = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat() + "Z"
+    now = datetime.now(timezone.utc)  # Use timezone-aware datetime
+    since = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    until = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
 
     logging.info("Fetching commits...")
     commits = fetch_commits(REPO, AUTHOR, since, until, GITHUB_TOKEN)

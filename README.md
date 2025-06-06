@@ -71,13 +71,15 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
 
 ### Usage
 
-Run the script to generate the daily summary:
+1. Run the script to generate the daily summary:
 
-```bash
-python devlog.py
-```
+   ```bash
+   python devlog.py
+   ```
 
-The summary will be saved in the `reports` directory as a Markdown file named `DailyDevLog_<date>.md`.
+2. The summary will be saved in the `reports` directory as a Markdown file named `DailyDevLog_<date>.md`.
+
+3. Open the generated file to view the summary.
 
 ### Example Output
 
@@ -89,6 +91,12 @@ The summary will be saved in the `reports` directory as a Markdown file named `D
 - Updated README with installation instructions.
 - Refactored database connection logic.
 ```
+
+### Troubleshooting
+
+- **Missing Dependencies**: Ensure all dependencies are installed using `pip install -r requirements.txt`.
+- **Invalid Credentials**: Verify your `.env` file contains the correct `GITHUB_TOKEN` and `OPENAI_API_KEY`.
+- **No Commits Found**: Ensure there are commits in the specified repository for the current day.
 
 ### Contributing
 
