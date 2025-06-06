@@ -6,7 +6,7 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
 
 - Automatically fetches daily commits from your GitHub repository  
 - Generates natural language summaries using OpenAI GPT-4  
-- Saves the summary in a well-formatted Markdown file  
+- Saves the summary in a well-formatted Markdown file in the `reports` directory  
 - Simple to configure and run locally or via automation  
 - Output is clear, professional, and human-readable  
 
@@ -48,6 +48,24 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
    AUTHOR=yourgithubusername
    ```
 
+### How to Get Your Credentials
+
+#### GitHub Personal Access Token (`GITHUB_TOKEN`)
+
+1. Log in to your GitHub account.
+2. Navigate to **Settings** > **Developer settings** > **Personal access tokens** > **Tokens (classic)**.
+3. Click **Generate new token**.
+4. Select the required scopes:
+   - For this project, select `repo` to access repository commits.
+5. Generate the token and copy it. Add it to the `.env` file as `GITHUB_TOKEN`.
+
+#### OpenAI API Key (`OPENAI_API_KEY`)
+
+1. Log in to your OpenAI account at [https://platform.openai.com](https://platform.openai.com).
+2. Navigate to **API Keys** in the dashboard.
+3. Click **Create new secret key**.
+4. Copy the generated key and add it to the `.env` file as `OPENAI_API_KEY`.
+
 ### Usage
 
 Run the script to generate the daily summary:
@@ -56,7 +74,7 @@ Run the script to generate the daily summary:
 python devlog.py
 ```
 
-The summary will be saved in a Markdown file named `DailyDevLog_<date>.md`.
+The summary will be saved in the `reports` directory as a Markdown file named `DailyDevLog_<date>.md`.
 
 ### Example Output
 
@@ -75,7 +93,7 @@ Contributions are welcome! Feel free to open issues or submit pull requests to i
 
 ### License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
 ### Repository
 

@@ -47,8 +47,10 @@ def generate_summary(commit_messages, openai_api_key):
         return "Error generating summary."
 
 def save_report(summary, date):
-    """Save the summary to a Markdown file."""
-    report_filename = f"DailyDevLog_{date}.md"
+    """Save the summary to a Markdown file in the 'reports' directory."""
+    reports_dir = "reports"
+    os.makedirs(reports_dir, exist_ok=True)  # Create the directory if it doesn't exist
+    report_filename = os.path.join(reports_dir, f"DailyDevLog_{date}.md")
     with open(report_filename, "w") as file:
         file.write(f"# DailyDevLog Summary for {date}\n\n")
         file.write(summary)
