@@ -15,7 +15,7 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
 ### Prerequisites
 
 - Python 3.8+  
-- GitHub Personal Access Token with `repo` access  
+- GitHub Fine-Grained Personal Access Token with repository-specific access  
 - OpenAI API Key  
 
 ### Installation
@@ -50,14 +50,17 @@ DailyDevLog is an AI-powered tool that automatically generates a human-readable 
 
 ### How to Get Your Credentials
 
-#### GitHub Personal Access Token (`GITHUB_TOKEN`)
+#### GitHub Fine-Grained Personal Access Token (`GITHUB_TOKEN`)
 
 1. Log in to your GitHub account.
-2. Navigate to [Settings](https://github.com/settings) > [Developer settings](https://github.com/settings/apps) > [Personal access tokens](https://github.com/settings/tokens) > [Tokens (classic)](https://github.com/settings/tokens/new).
-3. Click **Generate new token**.
-4. Select the required scopes:
-   - For this project, select `repo` to access repository commits.
-5. Generate the token and copy it. Add it to the `.env` file as `GITHUB_TOKEN`.
+2. Navigate to [Settings](https://github.com/settings) > [Developer settings](https://github.com/settings/apps) > [Personal access tokens](https://github.com/settings/tokens).
+3. Click **Generate new token** and select **Fine-grained token**.
+4. Specify the repository you want to grant access to (e.g., `MobrilzPvtLtd/RESO-HEATH-WebApp-API-and-Backend`).
+5. Select the required permissions:
+   - **Metadata** (Mandatory)
+   - **Commit statuses**
+   - **Contents**
+6. Generate the token and copy it. Add it to the `.env` file as `GITHUB_TOKEN`.
 
 #### OpenAI API Key (`OPENAI_API_KEY`)
 
